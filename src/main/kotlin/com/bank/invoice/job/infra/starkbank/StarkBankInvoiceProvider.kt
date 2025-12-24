@@ -4,11 +4,13 @@ import com.bank.invoice.job.domain.Invoice
 import com.bank.invoice.job.domain.InvoiceStatus
 import com.bank.invoice.job.domain.provider.InvoiceProvider
 import com.starkbank.Project
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import java.time.ZoneId
 import com.starkbank.Invoice as SdkInvoice
 
 @Component
+@Profile("prod")
 class StarkBankInvoiceProvider(
     private val project: Project
 ): InvoiceProvider {
@@ -17,7 +19,7 @@ class StarkBankInvoiceProvider(
             "amount" to invoice.amount,
             "taxId" to invoice.taxId,
             "name" to invoice.name,
-            "due" to invoice.due?.atZone(ZoneId.of("UTC"))?.toInstant().toString(),
+            "due" to invoice.due?.atZone(ZoneId.of("UTC"))?.toInstant().toString()
         )
 
         val sdkRequest = SdkInvoice(data)
