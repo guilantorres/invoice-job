@@ -1,4 +1,4 @@
-package com.bank.invoice.invoicejob.domain
+package com.bank.invoice.job.domain
 
 import java.time.LocalDateTime
 

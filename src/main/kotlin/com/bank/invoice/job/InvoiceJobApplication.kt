@@ -1,4 +1,4 @@
-package com.bank.invoice.invoicejob
+package com.bank.invoice.job
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
