@@ -28,8 +28,6 @@ class StarkBankInvoiceProvider(
             "due" to invoice.due?.toStarkIsoFormat()
         )
 
-        logger.info("Date debug: ${data["due"]}")
-
         val sdkRequest = SdkInvoice(data)
 
         val createdSdkInvoices = SdkInvoice.create(listOf(sdkRequest), project)
