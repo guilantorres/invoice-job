@@ -23,17 +23,11 @@ class InvoiceIssuerService(
         }
     }
 
-    // The following functions are for testing purposes
+    // The following function is for testing only
     private fun generateRandomInvoice(): Invoice {
         val amount = Random.nextLong(100, 10000)
-        val taxId = generateRandomCpf()
-        val name = "Spider Man \${Random.nextInt(100000)}"
+        val taxId = "01234567890"
+        val name = "Spider Man ${Random.nextInt(100000)}"
         return Invoice.createRequest(amount, taxId, name)
     }
-
-    private fun generateRandomCpf(): String {
-        val n = { Random.nextInt(0, 9) }
-        return "${n()}${n()}${n()}.${n()}${n()}${n()}.${n()}${n()}${n()}-${n()}${n()}"
-    }
-
 }
