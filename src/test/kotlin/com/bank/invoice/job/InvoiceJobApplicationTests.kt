@@ -1,4 +1,4 @@
-package com.bank.invoice.invoicejob
+package com.bank.invoice.job
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
