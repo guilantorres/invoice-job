@@ -1,5 +1,6 @@
 package com.bank.invoice.job.api
 
+import com.bank.invoice.job.dto.WebhookEventWrapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,24 +18,21 @@ class StarkBankWebhookController() {
         @RequestHeader("Digital-Signature") signature: String
     ): ResponseEntity<String> {
         try {
-            val jsonBody = mapper.readTree(body)
-            val event = jsonBody.get("event")
-            val subscription = event.path("subscription")
+            val webhookDto = mapper.readValue(body, WebhookEventWrapper::class.java)
+            val subscription = webhookDto.event.subscription
+            val log = webhookDto.event.log
+            val invoice = webhookDto.event.log.invoice
 
-            if (subscription.stringValue() != "invoice") {
+            if (subscription != "invoice") {
                 logger.warn("Subscription does not match subscription Invoice")
                 return ResponseEntity.badRequest().build()
             }
 
-            val log = event.path("log")
-            val errors = event.path("errors")
-
-            if (errors.isArray && errors.size() > 0) {
-                logger.info("Event has errors: {}", errors.values())
+            if (log.errors.isNotEmpty()) {
+                logger.info("Event has errors: {}", log.errors[0])
             }
 
-            val invoice = log.path("invoice")
-            val amount = invoice.path("amount").asLong()
+            val amount = invoice.amount
 
             logger.info("Amount received: {}", amount)
 
