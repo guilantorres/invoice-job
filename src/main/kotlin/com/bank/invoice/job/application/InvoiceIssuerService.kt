@@ -15,9 +15,12 @@ class InvoiceIssuerService(
 
     fun issueInvoice() {
         try {
-            val newInvoice = generateRandomInvoice()
-            val issuedInvoice = invoiceProvider.create(newInvoice)
-            logger.info("New invoice issued: ${issuedInvoice.id}")
+            val invoiceCount = (8..12).random()
+            repeat(invoiceCount) {
+                val newInvoice = generateRandomInvoice()
+                val issuedInvoice = invoiceProvider.create(newInvoice)
+                logger.info("New invoice issued: ${issuedInvoice.id}")
+            }
         } catch (e: Exception) {
             logger.error("Error on issuing new invoice: ${e.message}")
         }

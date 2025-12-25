@@ -32,9 +32,7 @@ class StarkBankWebhookController() {
                 logger.info("Event has errors: {}", log.errors[0])
             }
 
-            val amount = invoice.amount
-
-            logger.info("Amount received: {}", amount)
+            logger.info("Invoice received: {}", invoice)
 
             return ResponseEntity.ok("Received")
         } catch (e: Exception) {
