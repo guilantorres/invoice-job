@@ -13,7 +13,7 @@ class InvoiceIssuerScheduler(
 
     private val logger = LoggerFactory.getLogger(InvoiceIssuerScheduler::class.java)
 
-    @Scheduled(fixedRate = 30, initialDelay = 5, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 3600, initialDelay = 5, timeUnit = TimeUnit.SECONDS)
     fun runJob() {
         logger.info("Sending invoice...")
         invoiceIssuerService.issueInvoice()
