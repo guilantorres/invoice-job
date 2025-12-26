@@ -5,6 +5,7 @@ import com.bank.invoice.job.domain.provider.TransferProvider
 import com.bank.invoice.job.dto.WebhookInvoice
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class TransferService(
@@ -28,6 +29,7 @@ class TransferService(
             logger.info("Created Transfer: {}", createdTransfer)
         } catch (e: Exception) {
             logger.error("Error while creating Transfer", e)
+            throw e
         }
     }
 
@@ -39,7 +41,8 @@ class TransferService(
             bankCode = "20018183",
             branchCode = "0001",
             accountNumber = "6341320293482496",
-            accountType = "payment"
+            accountType = "payment",
+            created = LocalDateTime.now()
         )
     }
 }
