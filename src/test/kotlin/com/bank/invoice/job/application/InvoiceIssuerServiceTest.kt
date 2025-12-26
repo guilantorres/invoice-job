@@ -2,6 +2,7 @@ package com.bank.invoice.job.application
 
 import com.bank.invoice.job.domain.Invoice
 import com.bank.invoice.job.domain.provider.InvoiceProvider
+import com.bank.invoice.job.infra.persistence.IssuedInvoiceRepository
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -16,6 +17,8 @@ class InvoiceIssuerServiceTest {
 
     @Mock
     lateinit var invoiceProvider: InvoiceProvider
+    @Mock
+    lateinit var repository: IssuedInvoiceRepository
     @InjectMocks
     lateinit var invoiceIssuerService: InvoiceIssuerService
 
@@ -36,6 +39,7 @@ class InvoiceIssuerServiceTest {
 
         verify(invoiceProvider, atLeast(8)).create(any())
         verify(invoiceProvider, atMost(12)).create(any())
+        verify(repository, atLeast(8)).save(any())
     }
 
     @Test
@@ -81,5 +85,6 @@ class InvoiceIssuerServiceTest {
         }
 
         verify(invoiceProvider, atLeast(8)).create(any())
+        verify(repository, atLeast(7)).save(any())
     }
 }
