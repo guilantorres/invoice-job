@@ -14,15 +14,15 @@ class InvoiceIssuerService(
     private val logger = LoggerFactory.getLogger(InvoiceIssuerService::class.java)
 
     fun issueInvoice() {
-        try {
-            val invoiceCount = (8..12).random()
-            repeat(invoiceCount) {
+        val invoiceCount = (8..12).random()
+        repeat(invoiceCount) {
+            try {
                 val newInvoice = generateRandomInvoice()
                 val issuedInvoice = invoiceProvider.create(newInvoice)
                 logger.info("New invoice issued: ${issuedInvoice.id}")
+            } catch (e: Exception) {
+                logger.error("Error on issuing new invoice: ${e.message}")
             }
-        } catch (e: Exception) {
-            logger.error("Error on issuing new invoice: ${e.message}")
         }
     }
 
