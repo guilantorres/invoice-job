@@ -42,7 +42,7 @@ class StarkBankWebhookController(
             return ResponseEntity.ok("Received")
         } catch (e: Exception) {
             logger.error(e.message)
-            return ResponseEntity.badRequest().build()
+            return ResponseEntity.internalServerError().build()
         }
     }
 }
