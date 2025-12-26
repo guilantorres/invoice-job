@@ -2,10 +2,11 @@ package com.bank.invoice.job.api
 
 import com.bank.invoice.job.application.TransferService
 import com.bank.invoice.job.dto.WebhookEventWrapper
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @RestController
 @RequestMapping("/api/webhook/invoices")
@@ -40,8 +41,12 @@ class StarkBankWebhookController(
             transferService.processPaidInvoice(invoice)
 
             return ResponseEntity.ok("Received")
+        } catch (e: JsonProcessingException) {
+            logger.warn("Invalid JSON received: ${e.message}")
+            return ResponseEntity.badRequest().build()
+
         } catch (e: Exception) {
-            logger.error(e.message)
+            logger.error("Internal System Error: ${e.message}")
             return ResponseEntity.internalServerError().build()
         }
     }

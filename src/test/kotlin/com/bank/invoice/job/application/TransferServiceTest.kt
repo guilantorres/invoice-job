@@ -89,7 +89,7 @@ class TransferServiceTest {
 
     @Test
     fun `should not create transfer when invoice status is not paid`() {
-        val invoice = buildInvoice(amount = 1000, fee = 10, status = "created") // Status != paid
+        val invoice = buildInvoice(amount = 1000, fee = 10, status = "created")
 
         transferService.processPaidInvoice(invoice)
 
