@@ -5,7 +5,6 @@ import com.starkbank.Settings
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 
 @Configuration
 class StarkBankConfig(
@@ -13,18 +12,12 @@ class StarkBankConfig(
     @Value("\${starkbank.private.key}") private val privateKeyContent: String,
     @Value("\${starkbank.environment:sandbox}") private val environment: String
 ) {
+
     @Bean
     fun starkBankProject(): Project {
-        val key = privateKeyContent
-            .replace("-----BEGIN EC PRIVATE KEY-----", "")
-            .replace("-----END EC PRIVATE KEY-----", "")
-            .replace("\\n", "")
-            .replace(" ", "")
-            .trim()
+        val formattedKey = privateKeyContent.replace("\\n", "\n")
 
-        val privateKey = "-----BEGIN EC PRIVATE KEY-----\n$key\n-----END EC PRIVATE KEY-----"
-
-        val project = Project(environment, projectId, privateKey)
+        val project = Project(environment, projectId, formattedKey)
         Settings.user = project
         return project
     }
