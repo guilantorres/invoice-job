@@ -1,5 +1,6 @@
 package com.bank.invoice.job.api
 
+import com.bank.invoice.job.application.TransferService
 import com.bank.invoice.job.dto.WebhookEventWrapper
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -8,7 +9,9 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @RestController
 @RequestMapping("/api/webhook/invoices")
-class StarkBankWebhookController() {
+class StarkBankWebhookController(
+    private val transferService: TransferService
+) {
     private val logger = LoggerFactory.getLogger(StarkBankWebhookController::class.java)
     private val mapper = jacksonObjectMapper()
 
@@ -33,6 +36,8 @@ class StarkBankWebhookController() {
             }
 
             logger.info("Invoice received: {}", invoice)
+
+            transferService.processPaidInvoice(invoice)
 
             return ResponseEntity.ok("Received")
         } catch (e: Exception) {
