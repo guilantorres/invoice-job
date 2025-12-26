@@ -3,18 +3,26 @@ package com.bank.invoice.job.application
 import com.bank.invoice.job.domain.Transfer
 import com.bank.invoice.job.domain.provider.TransferProvider
 import com.bank.invoice.job.dto.WebhookInvoice
+import com.bank.invoice.job.infra.persistence.ProcessedEvent
+import com.bank.invoice.job.infra.persistence.ProcessedEventRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class TransferService(
-    private val transferProvider: TransferProvider
+    private val transferProvider: TransferProvider,
+    private val repository: ProcessedEventRepository
 ) {
     private val logger = LoggerFactory.getLogger(TransferService::class.java)
 
     fun processPaidInvoice(invoice: WebhookInvoice) {
         try {
+            if (repository.existsById(invoice.id)) {
+                logger.info("Invoice already processed: ${invoice.id}")
+                return
+            }
+
             if (invoice.status != "paid") {
                 logger.info("Invoice not paid: {}", invoice)
                 return
@@ -26,6 +34,7 @@ class TransferService(
             }
             val newTransfer = createNewTransfer(amountToTransfer)
             val createdTransfer = transferProvider.create(newTransfer)
+            repository.save(ProcessedEvent(eventId = invoice.id))
             logger.info("Created Transfer: {}", createdTransfer)
         } catch (e: Exception) {
             logger.error("Error while creating Transfer", e)

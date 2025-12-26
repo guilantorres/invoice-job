@@ -3,6 +3,7 @@ package com.bank.invoice.job.application
 import com.bank.invoice.job.domain.Transfer
 import com.bank.invoice.job.domain.provider.TransferProvider
 import com.bank.invoice.job.dto.WebhookInvoice
+import com.bank.invoice.job.infra.persistence.ProcessedEventRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
@@ -19,6 +20,8 @@ class TransferServiceTest {
 
     @Mock
     lateinit var transferProvider: TransferProvider
+    @Mock
+    lateinit var repository: ProcessedEventRepository
     @InjectMocks
     lateinit var transferService: TransferService
 
@@ -50,6 +53,8 @@ class TransferServiceTest {
         val fee = 100L
         val invoice = buildInvoice(amount,fee)
 
+        whenever(repository.existsById(invoice.id)).thenReturn(false)
+
         val expectedTransfer = Transfer(
             id = "x",
             amount = 900,
@@ -79,6 +84,7 @@ class TransferServiceTest {
         assertEquals("6341320293482496", capturedTransfer.accountNumber)
         assertEquals("payment", capturedTransfer.accountType)
         assertNotNull(capturedTransfer.created)
+        verify(repository).save(any())
     }
 
     @Test
@@ -112,6 +118,18 @@ class TransferServiceTest {
         }
 
         verify(transferProvider).create(any())
+    }
+
+    @Test
+    fun `should ignore duplicate event if already processed`() {
+        val invoice = buildInvoice(amount = 1000, fee = 10)
+
+        whenever(repository.existsById(invoice.id)).thenReturn(true)
+
+        transferService.processPaidInvoice(invoice)
+
+        verify(transferProvider, never()).create(any())
+        verify(repository, never()).save(any())
     }
 
 }
