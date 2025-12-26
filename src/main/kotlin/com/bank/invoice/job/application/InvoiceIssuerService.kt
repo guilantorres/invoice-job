@@ -2,13 +2,16 @@ package com.bank.invoice.job.application
 
 import com.bank.invoice.job.domain.Invoice
 import com.bank.invoice.job.domain.provider.InvoiceProvider
+import com.bank.invoice.job.infra.persistence.IssuedInvoice
+import com.bank.invoice.job.infra.persistence.IssuedInvoiceRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
 class InvoiceIssuerService(
-    private val invoiceProvider: InvoiceProvider
+    private val invoiceProvider: InvoiceProvider,
+    private val repository: IssuedInvoiceRepository
 ) {
 
     private val logger = LoggerFactory.getLogger(InvoiceIssuerService::class.java)
@@ -19,6 +22,19 @@ class InvoiceIssuerService(
             try {
                 val newInvoice = generateRandomInvoice()
                 val issuedInvoice = invoiceProvider.create(newInvoice)
+
+                val invoiceId = issuedInvoice.id
+                    ?: throw IllegalStateException("Provider returned invoice without ID")
+
+                repository.save(
+                    IssuedInvoice(
+                        invoiceId = invoiceId,
+                        amount = issuedInvoice.amount,
+                        taxId = issuedInvoice.taxId,
+                        name = issuedInvoice.name
+                    )
+                )
+
                 logger.info("New invoice issued: ${issuedInvoice.id}")
             } catch (e: Exception) {
                 logger.error("Error on issuing new invoice: ${e.message}")
