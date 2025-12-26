@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 import com.starkbank.Transfer as SdkTransfer
 
 @Component
-@Profile("prod")
 class StarkBankTransferProvider(
     private val project: Project
 ): TransferProvider {

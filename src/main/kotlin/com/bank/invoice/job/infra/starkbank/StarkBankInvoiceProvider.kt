@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 import com.starkbank.Invoice as SdkInvoice
 
 @Component
-@Profile("prod")
 class StarkBankInvoiceProvider(
     private val project: Project
 ): InvoiceProvider {

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
 @Configuration
-@Profile("prod")
 class StarkBankConfig(
     @Value("\${starkbank.project.id}") private val projectId: String,
     @Value("\${starkbank.private.key}") private val privateKeyContent: String,
